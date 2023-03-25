@@ -1,5 +1,8 @@
 # SocketStreamService
 
+## Iterating over web socket messages with async / await in Swift
+
+
 🚀 Usage of `SocketStreamService` instance, this wrapper uses a native way with `URLSessionWebSocketTask` and works as an asynchronous (async) functions into Swift, allowing us to run complex asynchronous code almost is if it were synchronous. You don't need to make logs, `SocketStreamService` will emit all necessary logs.
  
  - Note: `SocketStreamService` manage **ping-pong** issues automatically, the problem described below in the **warning** section.
@@ -21,7 +24,7 @@
 
       -------
 
-      
+
  ✏️ Example of usage:
  
 ```swift
