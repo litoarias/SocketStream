@@ -152,7 +152,6 @@ extension SocketStreamService: SocketStreamSystemEventsProtocol {
     }
     
     func enterForeground(url: URL) {
-        WebSocketLogger.url = url
         startStream(url: url)
         WebSocketLogger.log("enterForeground \(url.absoluteString)", level: .info)
     }
