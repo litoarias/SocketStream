@@ -11,12 +11,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let url = URL(string: "wss://socketsbay.com/wss/v2/1/demo/")!
         let stream = SocketStreamService(url: url)
         stream.onConnected = {
-            // TODO: Save in keychain?
             debugPrint("Socket connection")
         }
         
         stream.onDisconnect = {
-            // TODO: Remove from keychain?
             debugPrint("Socket disconnection")
         }
         
