@@ -14,8 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             debugPrint("Socket connection")
         }
         
-        stream.onDisconnect = {
-            debugPrint("Socket disconnection")
+        stream.onDisconnect = { url in
+            debugPrint("Socket disconnection \(url.absoluteString)")
         }
         
         // DISCONNECT

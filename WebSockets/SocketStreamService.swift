@@ -65,6 +65,7 @@ final class SocketStreamService: NSObject, AsyncSequence {
     private var continuation: WebSocketStream.Continuation?
     private var task: URLSessionWebSocketTask?
     private var urlSession: URLSession?
+    private var url: URL!
     private let delegateQueue = OperationQueue()
     private var timer: DispatchSourceTimer?
     private var systemEvents: SocketStreamSystemEvents?
@@ -76,10 +77,11 @@ final class SocketStreamService: NSObject, AsyncSequence {
     }()
     
     var onConnected: (() -> Void)?
-    var onDisconnect: (() -> Void)?
+    var onDisconnect: ((URL) -> Void)?
     
     init(url: URL) {
         super.init()
+        self.url = url
         systemEvents = SocketStreamSystemEvents(url: url)
         systemEvents?.delegate = self
         startStream(url: url)
@@ -136,7 +138,7 @@ extension SocketStreamService: URLSessionWebSocketDelegate {
     }
     
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
-        onDisconnect?()
+        onDisconnect?(url)
         stopPing()
         checkDisconnectionReason(closeCode: closeCode)
     }
