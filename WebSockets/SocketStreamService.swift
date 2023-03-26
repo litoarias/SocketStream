@@ -69,6 +69,7 @@ final class SocketStreamService: NSObject, AsyncSequence {
     private let delegateQueue = OperationQueue()
     private var timer: DispatchSourceTimer?
     private var systemEvents: SocketStreamSystemEvents?
+    private let pingInterval: Int = 10
     private lazy var stream: WebSocketStream = {
         return WebSocketStream { continuation in
             self.continuation = continuation
@@ -198,9 +199,9 @@ fileprivate extension SocketStreamService {
     func schedulePing() {
         let queue = DispatchQueue(label: Bundle.main.bundleIdentifier ?? "com.example" + ".socket.ping.timer")
         timer = DispatchSource.makeTimerSource(queue: queue)
-        timer?.schedule(deadline: .now(), repeating: .seconds(5))
+        timer?.schedule(deadline: .now(), repeating: .seconds(pingInterval))
         timer?.setEventHandler { [weak self] in
-            self?.startPing()
+            self?.sendPing()
         }
         timer?.resume()
     }
@@ -210,7 +211,7 @@ fileprivate extension SocketStreamService {
         timer = nil
     }
     
-    func startPing() {
+    func sendPing() {
         task?.sendPing { [weak self] (error) in
             if let error = error {
                 WebSocketLogger.log("sendPing: \(error.localizedDescription)")
