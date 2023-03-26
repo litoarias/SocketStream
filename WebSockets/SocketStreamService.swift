@@ -164,6 +164,8 @@ extension SocketStreamService: SocketStreamSystemEventsProtocol {
 fileprivate extension SocketStreamService {
     func startStream(url: URL) {
         WebSocketLogger.url = url
+        urlSession?.invalidateAndCancel()
+        urlSession = nil
         urlSession = URLSession(configuration: .default,
                                 delegate: self,
                                 delegateQueue: delegateQueue)
