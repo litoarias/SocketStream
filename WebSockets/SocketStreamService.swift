@@ -29,7 +29,7 @@ typealias WebSocketStream = AsyncThrowingStream<URLSessionWebSocketTask.Message,
      debugPrint("Socket connection")
  }
  
- stream.onDisconnect = {
+ stream.onDisconnected = {
      // TODO: Remove from keychain?
      debugPrint("Socket disconnection")
  }
@@ -43,14 +43,14 @@ typealias WebSocketStream = AsyncThrowingStream<URLSessionWebSocketTask.Message,
  Task {
      do {
          for try await message in stream {
-         switch message {
-         case .data(let data):
-            debugPrint(String(data: data, encoding: .utf8) as Any)
-         case .string(let string):
-            debugPrint(string)
-         @unknown default:
-            fatalError()
-         }
+             switch message {
+             case .data(let data):
+                debugPrint(String(data: data, encoding: .utf8) as Any)
+             case .string(let string):
+                debugPrint(string)
+             @unknown default:
+                fatalError()
+             }
          }
       } catch {
          print("Error: \(error)")
@@ -78,7 +78,7 @@ final class SocketStreamService: NSObject, AsyncSequence {
     }()
     
     var onConnected: (() -> Void)?
-    var onDisconnect: ((URL) -> Void)?
+    var onDisconnected: ((URL) -> Void)?
     
     init(url: URL) {
         super.init()
@@ -138,7 +138,7 @@ extension SocketStreamService: URLSessionWebSocketDelegate {
     }
     
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
-        onDisconnect?(url)
+        onDisconnected?(url)
         stopPing()
         checkDisconnectionReason(closeCode: closeCode)
     }
