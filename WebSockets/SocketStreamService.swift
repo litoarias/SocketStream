@@ -100,7 +100,6 @@ final class SocketStreamService: NSObject, AsyncSequence {
     func cancel() async throws {
         task?.cancel(with: .goingAway, reason: nil)
         continuation?.finish()
-        stopPing()
     }
     
     func send(text: String) async throws {
@@ -155,7 +154,6 @@ extension SocketStreamService: SocketStreamSystemEventsProtocol {
     }
     
     func enterForeground(url: URL) {
-        WebSocketLogger.url = url
         startStream(url: url)
         WebSocketLogger.log("enterForeground \(url.absoluteString)", level: .info)
     }
