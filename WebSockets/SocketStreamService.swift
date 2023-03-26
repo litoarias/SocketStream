@@ -73,7 +73,7 @@ final class SocketStreamService: NSObject, AsyncSequence {
     private lazy var stream: WebSocketStream = {
         return WebSocketStream { continuation in
             self.continuation = continuation
-            waitForNextValue()
+            waitForNextMessage()
         }
     }()
     
@@ -174,7 +174,7 @@ fileprivate extension SocketStreamService {
         task?.resume()
     }
 
-    func waitForNextValue() {
+    func waitForNextMessage() {
         guard task?.closeCode == .invalid else {
             continuation?.finish()
             return
@@ -189,7 +189,7 @@ fileprivate extension SocketStreamService {
                 let message = try result.get()
                 continuation.yield(message)
                 WebSocketLogger.log(message)
-                self?.waitForNextValue()
+                self?.waitForNextMessage()
             } catch {
                 continuation.finish(throwing: error)
             }
